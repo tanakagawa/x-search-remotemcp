@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from x_search_mcp import BearerAuthMiddleware, _parse_origins
+from x_search_mcp import BearerAuthMiddleware, CORS_ALLOW_METHODS, _parse_origins
 
 
 async def ok(_: object) -> JSONResponse:
@@ -47,3 +47,7 @@ def test_auth_middleware_skips_health() -> None:
     with _client_with_auth() as client:
         resp = client.get("/health")
     assert resp.status_code == 200
+
+
+def test_cors_methods_include_delete() -> None:
+    assert "DELETE" in CORS_ALLOW_METHODS

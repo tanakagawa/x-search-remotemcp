@@ -12,6 +12,9 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
+CORS_ALLOW_METHODS = ["GET", "POST", "DELETE", "OPTIONS"]
+
+
 from x_search_common import (  # re-export for tests/backward compatibility
     DEFAULT_TIMEOUT,
     MAX_RESULTS_DEFAULT,
@@ -106,7 +109,7 @@ def _run_http(host: str, port: int, auth_token: str, cors_origins: str) -> None:
         CORSMiddleware,
         allow_origins=_parse_origins(cors_origins),
         allow_credentials=False,
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=CORS_ALLOW_METHODS,
         allow_headers=["*"],
     )
     app.add_middleware(BearerAuthMiddleware, token=auth_token)
