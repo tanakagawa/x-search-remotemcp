@@ -1,28 +1,26 @@
 # X (Twitter) Search MCP Server
 
-xAI の [Responses API](https://docs.x.ai/developers/tools/overview) + [x_search サーバーサイドツール](https://docs.x.ai/developers/tools/x-search)を利用して、MCP 対応クライアントから X (Twitter) の投稿をリアルタイム検索できる MCP サーバーです。
+An MCP server that enables real-time X (Twitter) search from MCP clients using xAI's [Responses API](https://docs.x.ai/developers/tools/overview) and the [x_search server-side tool](https://docs.x.ai/developers/tools/x-search).
 
-このサーバーは **dual transport 対応**です。
+This server supports **dual transport modes**:
 
-- `stdio`（ローカル起動）
-- `Streamable HTTP`（remote MCP として公開）
+- `stdio` (local process mode)
+- `Streamable HTTP` (remote MCP mode)
 
-## 機能
+## Features
 
-| ツール名 | 機能 |
+| Tool | Description |
 |---|---|
-| `x_search_posts` | キーワード・ハッシュタグ・トピックで X の投稿を検索 |
-| `x_get_user_posts` | 特定ユーザーの最近の投稿を取得（`allowed_x_handles` で絞り込み） |
-| `x_get_trending` | トレンドトピックを取得 |
+| `x_search_posts` | Search X posts by keyword, hashtag, or topic |
+| `x_get_user_posts` | Fetch recent posts from a specific user |
+| `x_get_trending` | Fetch currently trending topics |
 
-## セットアップ
+## Prerequisites
 
-### 前提条件
+- Python 3.10+
+- xAI API key (from https://console.x.ai/)
 
-- Python 3.10 以上
-- xAI API キー（ https://console.x.ai/ から取得）
-
-### 1. リポジトリのクローンと仮想環境の作成
+## Setup
 
 ```bash
 git clone https://github.com/toocheap/x-search-mcp.git
@@ -32,24 +30,27 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 起動方法
+## Running the Server
 
-### 1) stdio transport（従来）
+### 1) stdio transport
 
 ```bash
 XAI_API_KEY="xai-..." \
 python x_search_mcp.py --transport stdio
 ```
 
-環境変数だけでも指定できます（デフォルトは stdio）。
+You can also use environment variables only (default transport is `stdio`):
 
 ```bash
 MCP_TRANSPORT=stdio XAI_API_KEY="xai-..." python x_search_mcp.py
 ```
 
-### 2) Streamable HTTP transport（remote MCP）
+### 2) Streamable HTTP transport (remote MCP)
 
-`/mcp` エンドポイントで MCP を提供します。さらに `/health` ヘルスチェックを提供します。
+In HTTP mode, the server exposes:
+
+- MCP endpoint: `/mcp`
+- Health endpoint: `/health`
 
 ```bash
 XAI_API_KEY="xai-..." \
@@ -58,17 +59,17 @@ MCP_CORS_ORIGINS="https://your-client.example,https://another.example" \
 python x_search_mcp.py --transport http --host 0.0.0.0 --port 8000
 ```
 
-HTTP モード時の主な環境変数:
+Main HTTP-related environment variables:
 
 - `MCP_TRANSPORT=http`
-- `MCP_HTTP_HOST`（デフォルト `127.0.0.1`）
-- `MCP_HTTP_PORT`（デフォルト `8000`）
-- `MCP_AUTH_TOKEN`（必須）
-- `MCP_CORS_ORIGINS`（カンマ区切り、デフォルト `*`）
+- `MCP_HTTP_HOST` (default: `127.0.0.1`)
+- `MCP_HTTP_PORT` (default: `8000`)
+- `MCP_AUTH_TOKEN` (**required in HTTP mode**)
+- `MCP_CORS_ORIGINS` (comma-separated, default: `*`)
 
-## MCP クライアント設定例
+## MCP Client Configuration Examples
 
-### stdio 設定例（Claude Desktop 等）
+### stdio example (Claude Desktop, etc.)
 
 ```json
 {
@@ -88,9 +89,9 @@ HTTP モード時の主な環境変数:
 }
 ```
 
-### remote MCP 設定例（Streamable HTTP）
+### Remote MCP example (Streamable HTTP)
 
-クライアント側が remote MCP をサポートしている場合、以下のように URL とヘッダーを指定します（キー名はクライアント実装に合わせて調整してください）。
+If your MCP client supports remote MCP, configure the URL and headers like this (field names may differ by client implementation):
 
 ```json
 {
@@ -106,22 +107,22 @@ HTTP モード時の主な環境変数:
 }
 ```
 
-ヘルスチェック例:
+Health check example:
 
 ```bash
 curl -i https://mcp.example.com/health
 ```
 
-## 使用例
+## Example Prompts
 
-- 「AIに関する最新のツイートを検索して」
-- 「@elonmusk の最近の投稿を見せて」
-- 「日本でのトレンドを教えて」
-- 「#cybersecurity のツイートを日本語で検索」
+- "Search for the latest AI posts on X."
+- "Show recent posts by @elonmusk."
+- "What is trending in Japan right now?"
+- "Search #cybersecurity posts in Japanese."
 
-## アーキテクチャ
+## Architecture
 
-### stdio モード
+### stdio mode
 
 ```
 MCP Client <-> MCP Server (stdio) <-> xAI Responses API (/v1/responses)
@@ -132,24 +133,24 @@ MCP Client <-> MCP Server (stdio) <-> xAI Responses API (/v1/responses)
                                        X (Twitter) data
 ```
 
-### HTTP モード
+### HTTP mode
 
 ```
 Remote MCP Client <-> HTTPS /mcp (Bearer + CORS) <-> MCP Server <-> xAI Responses API
                        \-> /health
 ```
 
-## モデル
+## Model Support
 
-`x_search` サーバーサイドツールは **grok-4 系モデルのみ**で利用可能です。
+The `x_search` server-side tool is available only on **grok-4 family models**.
 
-| モデル | 特徴 |
+| Model | Notes |
 |---|---|
-| `grok-4-1-fast` | ツール呼び出し最適化・高速（**デフォルト**） |
-| `grok-4-1-fast-reasoning` | 推論付き・より高精度 |
+| `grok-4-1-fast` | Tool-calling optimized and fast (**default**) |
+| `grok-4-1-fast-reasoning` | Higher reasoning quality |
 
-モデルを変更する場合は `x_search_common.py` 内の `XAI_MODEL` 定数を編集してください。
+To change the model, edit the `XAI_MODEL` constant in `x_search_common.py`.
 
-## ライセンス
+## License
 
 MIT
