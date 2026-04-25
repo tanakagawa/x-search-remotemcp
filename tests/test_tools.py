@@ -17,6 +17,7 @@ from typing import Optional
 
 import pytest
 
+import x_search_common
 import x_search_mcp
 from x_search_mcp import (
     ResponseFormat,
@@ -60,7 +61,7 @@ def capture_api(
 ) -> ApiCallCapture:
     """Replace _call_responses_api with a capturing fake."""
     cap = ApiCallCapture()
-    monkeypatch.setattr(x_search_mcp, "_call_responses_api", cap)
+    monkeypatch.setattr(x_search_common, "_call_responses_api", cap)
     return cap
 
 
@@ -77,7 +78,7 @@ def failing_api(
     ) -> str:
         raise RuntimeError("API call failed")
 
-    monkeypatch.setattr(x_search_mcp, "_call_responses_api", _fail)
+    monkeypatch.setattr(x_search_common, "_call_responses_api", _fail)
 
 
 # ===================================================================
