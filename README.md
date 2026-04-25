@@ -153,4 +153,13 @@ To change the model, edit the `XAI_MODEL` constant in `x_search_common.py`.
 
 ## License
 
-MIT
+MIT License.
+
+This repository is a fork of [toocheap/x-search-mcp](https://github.com/toocheap/x-search-mcp),
+which states `MIT` in its README.
+
+This fork adds Remote MCP / Streamable HTTP support and related product updates.
+
+Copyright (c) 2026 tanakagawa and contributors.
+
+See [LICENSE](./LICENSE) for details.
