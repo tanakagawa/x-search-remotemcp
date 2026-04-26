@@ -115,6 +115,38 @@ python x_search_mcp.py --transport http --host 0.0.0.0 --port 8000
 curl -i https://mcp.example.com/health
 ```
 
+
+## Docker
+
+### 1) イメージをビルド
+
+```bash
+docker build -t x-search-remotemcp:local .
+```
+
+### 2) コンテナを起動
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e XAI_API_KEY="xai-..." \
+  -e MCP_AUTH_TOKEN="change-me" \
+  -e MCP_CORS_ORIGINS="https://your-client.example" \
+  x-search-remotemcp:local
+```
+
+### 3) docker compose で起動
+
+```bash
+cp .env.example .env
+# .env を編集
+docker compose up --build
+```
+
+アクセス先:
+
+- MCP エンドポイント: `http://localhost:8000/mcp`
+- ヘルスチェック: `http://localhost:8000/health`
+
 ## モデル対応
 
 `x_search` サーバーサイドツールは **grok-4 系モデル**で利用できます。

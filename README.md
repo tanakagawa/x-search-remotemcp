@@ -115,6 +115,38 @@ Health check example:
 curl -i https://mcp.example.com/health
 ```
 
+
+## Docker
+
+### 1) Build image
+
+```bash
+docker build -t x-search-remotemcp:local .
+```
+
+### 2) Run container
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e XAI_API_KEY="xai-..." \
+  -e MCP_AUTH_TOKEN="change-me" \
+  -e MCP_CORS_ORIGINS="https://your-client.example" \
+  x-search-remotemcp:local
+```
+
+### 3) Run with docker compose
+
+```bash
+cp .env.example .env
+# edit .env values
+docker compose up --build
+```
+
+Then access:
+
+- MCP endpoint: `http://localhost:8000/mcp`
+- Health endpoint: `http://localhost:8000/health`
+
 ## Example Prompts
 
 - "Search for the latest AI posts on X."
