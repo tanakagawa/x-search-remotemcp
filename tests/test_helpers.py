@@ -89,12 +89,16 @@ class TestBuildXSearchConfig:
             to_date="2025-12-31",
             allowed_handles=["user1", "user2"],
             excluded_handles=["spam"],
+            enable_image_understanding=True,
+            enable_video_understanding=True,
         )
         assert result == {
             "from_date": "2025-01-01",
             "to_date": "2025-12-31",
             "allowed_x_handles": ["user1", "user2"],
             "excluded_x_handles": ["spam"],
+            "enable_image_understanding": True,
+            "enable_video_understanding": True,
         }
 
 

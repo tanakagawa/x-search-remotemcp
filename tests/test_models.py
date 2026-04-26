@@ -51,6 +51,8 @@ class TestXSearchPostsInput:
         assert m.language is None
         assert m.from_date is None
         assert m.to_date is None
+        assert m.enable_image_understanding is False
+        assert m.enable_video_understanding is False
         assert m.response_format == ResponseFormat.MARKDOWN
 
     def test_all_fields(self) -> None:
@@ -61,12 +63,16 @@ class TestXSearchPostsInput:
             language="ja",
             from_date="2025-01-01",
             to_date="2025-12-31",
+            enable_image_understanding=True,
+            enable_video_understanding=True,
             response_format="json",
         )
         assert m.max_results == 5
         assert m.language == "ja"
         assert m.from_date == "2025-01-01"
         assert m.to_date == "2025-12-31"
+        assert m.enable_image_understanding is True
+        assert m.enable_video_understanding is True
         assert m.response_format == ResponseFormat.JSON
 
     def test_query_empty_string_rejected(self) -> None:
@@ -126,6 +132,8 @@ class TestXGetUserPostsInput:
         assert m.topic_filter is None
         assert m.from_date is None
         assert m.to_date is None
+        assert m.enable_image_understanding is False
+        assert m.enable_video_understanding is False
         assert m.response_format == ResponseFormat.MARKDOWN
 
     def test_all_fields(self) -> None:
@@ -136,11 +144,15 @@ class TestXGetUserPostsInput:
             topic_filter="AI",
             from_date="2025-06-01",
             to_date="2025-06-30",
+            enable_image_understanding=True,
+            enable_video_understanding=True,
             response_format="json",
         )
         assert m.username == "OpenAI"
         assert m.max_results == 20
         assert m.topic_filter == "AI"
+        assert m.enable_image_understanding is True
+        assert m.enable_video_understanding is True
 
     def test_username_empty_rejected(self) -> None:
         """Empty username violates min_length=1."""
