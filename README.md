@@ -142,14 +142,15 @@ Remote MCP Client <-> HTTPS /mcp (Bearer + CORS) <-> MCP Server <-> xAI Response
 
 ## Model Support
 
-The `x_search` server-side tool is available only on **grok-4 family models**.
+The `x_search` server-side tool is available on **grok-4 family models**.
 
 | Model | Notes |
 |---|---|
-| `grok-4-1-fast` | Tool-calling optimized and fast (**default**) |
+| `grok-4.20-reasoning` | Latest flagship reasoning model (**default**) |
+| `grok-4-1-fast` | Fast and widely compatible |
 | `grok-4-1-fast-reasoning` | Higher reasoning quality |
 
-To change the model, edit the `XAI_MODEL` constant in `x_search_common.py`.
+To change the model, set the `XAI_MODEL` environment variable (default: `grok-4.20-reasoning`).
 
 ## License
 

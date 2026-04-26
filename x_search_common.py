@@ -12,7 +12,7 @@ from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, ConfigDict, Field
 
 XAI_API_BASE = "https://api.x.ai/v1"
-XAI_MODEL = "grok-4-1-fast"
+XAI_MODEL = os.environ.get("XAI_MODEL", "grok-4.20-reasoning")
 DEFAULT_TIMEOUT = 120.0
 MAX_RESULTS_DEFAULT = 10
 
@@ -63,6 +63,14 @@ class XSearchPostsInput(BaseModel):
         default=None,
         description="Search end date in YYYY-MM-DD format (e.g., '2025-12-31')",
     )
+    enable_image_understanding: bool = Field(
+        default=False,
+        description="Enable image understanding for posts returned by x_search",
+    )
+    enable_video_understanding: bool = Field(
+        default=False,
+        description="Enable video understanding for posts returned by x_search",
+    )
     response_format: ResponseFormat = Field(
         default=ResponseFormat.MARKDOWN,
         description="Output format: 'markdown' for readable text, 'json' for structured data",
@@ -100,6 +108,14 @@ class XGetUserPostsInput(BaseModel):
     to_date: Optional[str] = Field(
         default=None,
         description="Search end date in YYYY-MM-DD format",
+    )
+    enable_image_understanding: bool = Field(
+        default=False,
+        description="Enable image understanding for posts returned by x_search",
+    )
+    enable_video_understanding: bool = Field(
+        default=False,
+        description="Enable video understanding for posts returned by x_search",
     )
     response_format: ResponseFormat = Field(
         default=ResponseFormat.MARKDOWN,
@@ -232,6 +248,8 @@ def _build_x_search_config(
     to_date: Optional[str] = None,
     allowed_handles: Optional[list] = None,
     excluded_handles: Optional[list] = None,
+    enable_image_understanding: bool = False,
+    enable_video_understanding: bool = False,
 ) -> Optional[dict]:
     """Build x_search tool configuration dict."""
     config: dict = {}
@@ -243,6 +261,10 @@ def _build_x_search_config(
         config["allowed_x_handles"] = allowed_handles
     if excluded_handles:
         config["excluded_x_handles"] = excluded_handles
+    if enable_image_understanding:
+        config["enable_image_understanding"] = True
+    if enable_video_understanding:
+        config["enable_video_understanding"] = True
     return config if config else None
 
 
@@ -289,6 +311,8 @@ def create_mcp_server(
             x_config = _build_x_search_config(
                 from_date=params.from_date,
                 to_date=params.to_date,
+                enable_image_understanding=params.enable_image_understanding,
+                enable_video_understanding=params.enable_video_understanding,
             )
 
             return await _call_responses_api(prompt, x_search_config=x_config)
@@ -326,6 +350,8 @@ def create_mcp_server(
                 from_date=params.from_date,
                 to_date=params.to_date,
                 allowed_handles=[params.username],
+                enable_image_understanding=params.enable_image_understanding,
+                enable_video_understanding=params.enable_video_understanding,
             )
 
             return await _call_responses_api(prompt, x_search_config=x_config)
