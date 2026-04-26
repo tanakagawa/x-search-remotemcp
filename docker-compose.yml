@@ -1,0 +1,18 @@
+services:
+  x-search-remotemcp:
+    build: .
+    image: x-search-remotemcp:local
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      MCP_TRANSPORT: http
+      MCP_HTTP_HOST: 0.0.0.0
+      MCP_HTTP_PORT: 8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
