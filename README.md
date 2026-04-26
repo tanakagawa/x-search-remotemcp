@@ -2,6 +2,8 @@
 
 An MCP server that enables real-time X (Twitter) search from MCP clients using xAI's [Responses API](https://docs.x.ai/developers/tools/overview) and the [x_search server-side tool](https://docs.x.ai/developers/tools/x-search).
 
+[日本語版 README](./README.ja.md)
+
 This server supports **dual transport modes**:
 
 - `stdio` (local process mode)
