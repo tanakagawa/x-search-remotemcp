@@ -27,8 +27,8 @@ MCP クライアントから X（Twitter）をリアルタイム検索できる 
 ## セットアップ
 
 ```bash
-git clone https://github.com/toocheap/x-search-mcp.git
-cd x-search-mcp
+git clone https://github.com/tanakagawa/x-search-remotemcp.git
+cd x-search-remotemcp
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
