@@ -7,3 +7,8 @@ __pycache__/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# Never bake local secrets into image layers
+.env
+.env.*
+!.env.example
